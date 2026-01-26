@@ -1,0 +1,55 @@
+@model MusicStreaming.Models.Playlist
+
+@{
+    ViewData["Title"] = Model?.PlaylistName ?? "Playlist";
+}
+
+<div class="form-container">
+    <h1>@Model?.PlaylistName</h1>
+    <p>@Model?.Description</p>
+
+    <div style="margin-top: 1.5rem;">
+        <button class="btn btn-heart" type="button" onclick="toggleSavePlaylist(@Model?.Id, this)">
+            ♡ Save
+        </button>
+        <a href="@Url.Action("Edit", "Playlists", new { id = Model?.Id })" class="btn btn-info">Edit</a>
+        <a href="@Url.Action("Delete", "Playlists", new { id = Model?.Id })" class="btn btn-danger">Delete</a>
+        <a href="@Url.Action("Index", "Playlists")" class="btn btn-secondary">Back</a>
+    </div>
+
+    <h2 style="margin-top: 2rem;">Songs in Playlist</h2>
+    @if (Model?.PlaylistSongs?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Song</th>
+                    <th>Artist</th>
+                    <th>Added</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ps in Model.PlaylistSongs)
+                {
+                    <tr>
+                        <td>@ps.Song?.SongName</td>
+                        <td>@ps.Song?.Artist?.Username</td>
+                        <td>@ps.AddedAt.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <form asp-action="RemoveSong" method="post" style="display: inline;">
+                                <input type="hidden" name="playlistId" value="@Model.Id" />
+                                <input type="hidden" name="songId" value="@ps.SongId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No songs in this playlist yet.</p>
+    }
+</div>

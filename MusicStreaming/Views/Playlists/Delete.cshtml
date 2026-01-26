@@ -1,0 +1,18 @@
+@model MusicStreaming.Models.Playlist
+
+@{
+    ViewData["Title"] = "Delete Playlist";
+}
+
+<div class="form-container" style="max-width: 500px; margin: 0 auto;">
+    <h1>Delete Playlist</h1>
+
+    <p style="margin: 1.5rem 0;">Are you sure you want to delete <strong>@Model?.PlaylistName</strong>?</p>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" name="playlistId" value="@Model?.Id" />
+        
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="@Url.Action("Index", "Playlists")" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

@@ -1,0 +1,91 @@
+@{
+    ViewData["Title"] = "My Library";
+    var savedSongs = ViewData["SavedSongs"] as List<MusicStreaming.Models.SavedSong>;
+    var savedPlaylists = ViewData["SavedPlaylists"] as List<MusicStreaming.Models.SavedPlaylist>;
+}
+
+<h1>My Library</h1>
+
+<div style="margin-top: 2rem;">
+    <h2>Saved Songs</h2>
+    @if (savedSongs?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Song</th>
+                    <th>Artist</th>
+                    <th>Saved On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var saved in savedSongs.OrderByDescending(x => x.SavedAt))
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "Songs", new { id = saved.SongId })">
+                                @saved.Song?.SongName
+                            </a>
+                        </td>
+                        <td>@saved.Song?.Artist?.Username</td>
+                        <td>@saved.SavedAt.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <form asp-action="RemoveSong" asp-controller="Library" method="post" style="display: inline;">
+                                <input type="hidden" name="songId" value="@saved.SongId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No saved songs yet.</p>
+    }
+</div>
+
+<div style="margin-top: 2rem;">
+    <h2>Saved Playlists</h2>
+    @if (savedPlaylists?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Playlist</th>
+                    <th>Owner</th>
+                    <th>Songs</th>
+                    <th>Saved On</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var saved in savedPlaylists.OrderByDescending(x => x.SavedAt))
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "Playlists", new { id = saved.Playlist?.Id })">
+                                @saved.Playlist?.PlaylistName
+                            </a>
+                        </td>
+                        <td>@saved.Playlist?.User?.Username</td>
+                        <td>@saved.Playlist?.PlaylistSongs?.Count ?? 0</td>
+                        <td>@saved.SavedAt.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <form asp-action="RemovePlaylist" asp-controller="Library" method="post" style="display: inline;">
+                                <input type="hidden" name="playlistId" value="@saved.Playlist?.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No saved playlists yet.</p>
+    }
+</div>

@@ -1,0 +1,57 @@
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="form-container" style="max-width: 400px; margin: 3rem auto;">
+    <h1>Register</h1>
+    
+    <form asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger" style="margin-bottom:1rem;"></div>
+
+        <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Account Type</label>
+            <div style="display: flex; gap: 2rem; margin-top: 0.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="radio" name="role" value="User" checked />
+                    <span>User</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="radio" name="role" value="Artist" />
+                    <span>Artist</span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+    <p style="margin-top: 1rem;">
+        Already have an account? <a href="@Url.Action("Login", "Account")">Login here</a>
+    </p>
+
+    @if (TempData["error"] != null)
+    {
+        <div class="error" style="margin-top: 1rem;">@TempData["error"]</div>
+    }
+</div>

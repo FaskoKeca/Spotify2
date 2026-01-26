@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Following";
+    var followingUsers = ViewData["FollowingUsers"] as List<MusicStreaming.Models.User>;
+}
+
+<h1>Users I'm Following</h1>
+
+@if (followingUsers?.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Followers</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in followingUsers)
+            {
+                <tr>
+                    <td>
+                        @if (user.Role == "Artist")
+                        {
+                            <a href="@Url.Action("Artist", "UserProfile", new { id = user.Id })">
+                                @user.Username
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Profile", "UserProfile", new { id = user.Id })">
+                                @user.Username
+                            </a>
+                        }
+                    </td>
+                    <td>@user.Role</td>
+                    <td>@(user.Followers?.Count ?? 0)</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm following" type="button" onclick="toggleFollow(@user.Id, this)">
+                            Following
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>You're not following anyone yet.</p>
+}

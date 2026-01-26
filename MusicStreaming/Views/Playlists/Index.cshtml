@@ -1,0 +1,50 @@
+@model List<MusicStreaming.Models.Playlist>
+
+@{
+    ViewData["Title"] = "My Playlists";
+}
+
+<h1>My Playlists</h1>
+
+<a href="@Url.Action("Create", "Playlists")" class="btn btn-primary" style="margin-bottom: 1.5rem;">Create New Playlist</a>
+
+@if (Model?.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Playlist Name</th>
+                <th>Description</th>
+                <th>Songs</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var playlist in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("Details", "Playlists", new { id = playlist.Id })">
+                            @playlist.PlaylistName
+                        </a>
+                    </td>
+                    <td>@playlist.Description</td>
+                    <td>@playlist.PlaylistSongs?.Count ?? 0</td>
+                    <td>@playlist.CreatedAt.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <button class="btn btn-heart btn-sm" type="button" onclick="toggleSavePlaylist(@playlist.Id, this)">
+                            ♡ Save
+                        </button>
+                        <a href="@Url.Action("Edit", "Playlists", new { id = playlist.Id })" class="btn btn-info btn-sm">Edit</a>
+                        <a href="@Url.Action("Delete", "Playlists", new { id = playlist.Id })" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No playlists yet. <a href="@Url.Action("Create", "Playlists")">Create one</a></p>
+}

@@ -1,0 +1,63 @@
+@model MusicStreaming.Models.Song
+
+@{
+    ViewData["Title"] = Model?.SongName ?? "Song Details";
+}
+
+<div class="form-container">
+    <h1>@Model?.SongName</h1>
+
+    <div style="margin-top: 1.5rem;">
+        <p><strong>Artist:</strong> 
+            @if (Model?.Artist != null)
+            {
+                <a href="@Url.Action("Artist", "UserProfile", new { id = Model.ArtistId })">
+                    @Model.Artist.Username
+                </a>
+            }
+        </p>
+        <p><strong>Producer:</strong> @Model?.Producer</p>
+        <p><strong>Year:</strong> @Model?.SongYear</p>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+        <button class="btn btn-heart" type="button" onclick="toggleSaveSong(@Model?.Id, this)">
+            ♡ Save
+        </button>
+
+        @if (ViewData["Role"]?.ToString() == "Artist" && Model?.ArtistId == Context.Session.GetInt32("UserId") || ViewData["Role"]?.ToString() == "Admin")
+        {
+            <a href="@Url.Action("Edit", "Songs", new { id = Model?.Id })" class="btn btn-info">Edit</a>
+            <a href="@Url.Action("Delete", "Songs", new { id = Model?.Id })" class="btn btn-danger">Delete</a>
+        }
+        
+        <a href="@Url.Action("Index", "Songs")" class="btn btn-secondary">Back</a>
+    </div>
+
+    <h2 style="margin-top: 2rem;">Add to Playlist</h2>
+    @if (Context.Session.GetInt32("UserId") != null)
+    {
+        <form asp-action="AddSong" asp-controller="Playlists" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="songId" value="@Model?.Id" />
+            <div class="form-group">
+                <label class="form-label" for="playlistId">Select Playlist</label>
+                <select class="form-control" id="playlistId" name="playlistId" required>
+                    <option value="">-- Choose a playlist --</option>
+                    @if (ViewData["UserPlaylists"] is List<MusicStreaming.Models.Playlist> playlists)
+                    {
+                        @foreach (var playlist in playlists)
+                        {
+                            <option value="@playlist.Id">@playlist.PlaylistName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Add to Playlist</button>
+        </form>
+    }
+    else
+    {
+        <p>Please <a href="@Url.Action("Login", "Account")">log in</a> to add songs to playlists.</p>
+    }
+</div>

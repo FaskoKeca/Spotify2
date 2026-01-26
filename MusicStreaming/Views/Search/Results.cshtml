@@ -1,0 +1,144 @@
+@{
+    ViewData["Title"] = "Search Results";
+    var songs = ViewData["Songs"] as List<MusicStreaming.Models.Song>;
+    var users = ViewData["Users"] as List<MusicStreaming.Models.User>;
+    var playlists = ViewData["Playlists"] as List<MusicStreaming.Models.Playlist>;
+    var query = ViewData["Query"] as string;
+}
+
+<h1>Search Results for "@query"</h1>
+
+<div style="margin-top: 2rem;">
+    <h2>Songs (@(songs?.Count ?? 0))</h2>
+    @if (songs?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Song Name</th>
+                    <th>Artist</th>
+                    <th>Year</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var song in songs)
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "Songs", new { id = song.Id })">
+                                @song.SongName
+                            </a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Artist", "UserProfile", new { id = song.ArtistId })">
+                                @song.Artist?.Username
+                            </a>
+                        </td>
+                        <td>@song.SongYear</td>
+                        <td>
+                            <button class="btn btn-heart btn-sm" type="button" onclick="toggleSaveSong(@song.Id, this)">
+                                ♡ Save
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No songs found.</p>
+    }
+</div>
+
+<div style="margin-top: 2rem;">
+    <h2>Users (@(users?.Count ?? 0))</h2>
+    @if (users?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in users)
+                {
+                    <tr>
+                        <td>
+                            @if (user.Role == "Artist")
+                            {
+                                <a href="@Url.Action("Artist", "UserProfile", new { id = user.Id })">
+                                    @user.Username
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Profile", "UserProfile", new { id = user.Id })">
+                                    @user.Username
+                                </a>
+                            }
+                        </td>
+                        <td>@user.Role</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" type="button" onclick="toggleFollow(@user.Id, this)">
+                                Follow
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No users found.</p>
+    }
+</div>
+
+<div style="margin-top: 2rem;">
+    <h2>Playlists (@(playlists?.Count ?? 0))</h2>
+    @if (playlists?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Playlist Name</th>
+                    <th>Owner</th>
+                    <th>Songs</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var playlist in playlists)
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "Playlists", new { id = playlist.Id })">
+                                @playlist.PlaylistName
+                            </a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Profile", "UserProfile", new { id = playlist.User?.Id })">
+                                @playlist.User?.Username
+                            </a>
+                        </td>
+                        <td>@playlist.PlaylistSongs?.Count ?? 0</td>
+                        <td>
+                            <button class="btn btn-heart btn-sm" type="button" onclick="toggleSavePlaylist(@playlist.Id, this)">
+                                ♡ Save
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No playlists found.</p>
+    }
+</div>

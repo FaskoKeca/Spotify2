@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Music Streaming</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; }
+        .navbar { background: #2c3e50; color: white; padding: 1rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+        .navbar-brand { font-size: 1.5rem; font-weight: bold; text-decoration: none; color: white; }
+        .search-bar { flex: 1; max-width: 400px; }
+        .search-bar form { display: flex; gap: 0.5rem; }
+        .search-bar input { flex: 1; padding: 0.5rem; border: none; border-radius: 4px; }
+        .search-bar button { padding: 0.5rem 1rem; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .nav-menu { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-menu a { color: white; text-decoration: none; transition: color 0.3s; }
+        .nav-menu a:hover { color: #3498db; }
+        .user-info { font-size: 0.9rem; opacity: 0.9; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
+        .form-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-control { width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.3s; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-info { background: #3498db; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-heart { background: #e8f4f8; color: #e74c3c; border: 2px solid #e74c3c; padding: 0.5rem 1rem; transition: all 0.3s; }
+        .btn-heart:hover { background: #fff5e6; transform: scale(1.05); }
+        .btn-heart.saved { background: #e74c3c; color: white; }
+        .table { width: 100%; border-collapse: collapse; background: white; margin-top: 1rem; }
+        .table th, .table td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
+        .table th { background: #ecf0f1; font-weight: 600; }
+        .table tr:hover { background: #f9f9f9; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 2rem; margin-top: 3rem; }
+        h1 { margin-bottom: 1rem; }
+        .error { color: #e74c3c; }
+        .success { color: #27ae60; }
+        .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="navbar-content">
+                <a class="navbar-brand" href="/">♪ MusicStream</a>
+                <div class="search-bar">
+                    <form asp-action="Results" asp-controller="Search" method="get">
+                        <input type="text" name="query" placeholder="Search songs, artists, playlists..." />
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="nav-menu">
+                    <a href="@Url.Action("Index", "Songs")">Songs</a>
+                    <a href="@Url.Action("Index", "Playlists")">Playlists</a>
+                    @if (ViewData["Role"]?.ToString() == "Artist" || ViewData["Role"]?.ToString() == "Admin")
+                    {
+                        <a href="@Url.Action("Create", "Songs")">Add Song</a>
+                    }
+                    <a href="@Url.Action("Index", "Library")">My Library</a>
+                    <a href="@Url.Action("Index", "Follow")">Following</a>
+                    <span class="user-info">@ViewData["Username"]</span>
+                    <a href="@Url.Action("Logout", "Account")">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Music Streaming Platform. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleSaveSong(songId, button) {
+            const isSaved = button.classList.contains('saved');
+            const endpoint = isSaved ? `/Library/RemoveSong?songId=${songId}` : `/Library/SaveSong?songId=${songId}`;
+            
+            fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+                .then(r => r.json())
+                .then(d => {
+                    if (button.classList.contains('saved')) {
+                        button.classList.remove('saved');
+                        button.textContent = '♡ Save';
+                    } else {
+                        button.classList.add('saved');
+                        button.textContent = '♥ Saved';
+                    }
+                })
+                .catch(e => console.error('Error:', e));
+        }
+
+        function toggleSavePlaylist(playlistId, button) {
+            const isSaved = button.classList.contains('saved');
+            const endpoint = isSaved ? `/Library/RemovePlaylist?playlistId=${playlistId}` : `/Library/SavePlaylist?playlistId=${playlistId}`;
+            
+            fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+                .then(r => r.json())
+                .then(d => {
+                    if (button.classList.contains('saved')) {
+                        button.classList.remove('saved');
+                        button.textContent = '♡ Save';
+                    } else {
+                        button.classList.add('saved');
+                        button.textContent = '♥ Saved';
+                    }
+                })
+                .catch(e => console.error('Error:', e));
+        }
+
+        function toggleFollow(userId, button) {
+            const isFollowing = button.classList.contains('following');
+            const endpoint = isFollowing ? `/Follow/Unfollow?followingId=${userId}` : `/Follow/Follow?followingId=${userId}`;
+            
+            fetch(endpoint, { method: 'POST' })
+                .then(r => r.json())
+                .then(d => {
+                    if (button.classList.contains('following')) {
+                        button.classList.remove('following');
+                        button.textContent = 'Follow';
+                        button.classList.remove('btn-danger');
+                        button.classList.add('btn-primary');
+                    } else {
+                        button.classList.add('following');
+                        button.textContent = 'Following';
+                        button.classList.remove('btn-primary');
+                        button.classList.add('btn-danger');
+                    }
+                })
+                .catch(e => console.error('Error:', e));
+        }
+    </script>
+</body>
+</html>

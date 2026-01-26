@@ -1,0 +1,31 @@
+@model MusicStreaming.Models.Playlist
+
+@{
+    ViewData["Title"] = "Edit Playlist";
+}
+
+<div class="form-container" style="max-width: 500px; margin: 0 auto;">
+    <h1>Edit Playlist</h1>
+
+    <form asp-action="Edit" method="post">
+        <input type="hidden" name="playlistId" value="@Model?.Id" />
+
+        <div class="form-group">
+            <label class="form-label" for="playlistName">Playlist Name</label>
+            <input type="text" class="form-control" id="playlistName" name="playlistName" value="@Model?.PlaylistName" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4">@Model?.Description</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="@Url.Action("Index", "Playlists")" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    @if (ViewData.ModelState["playlistName"]?.Errors.Count > 0)
+    {
+        <div class="error" style="margin-top: 1rem;">@ViewData.ModelState["playlistName"]?.Errors[0]?.ErrorMessage</div>
+    }
+</div>

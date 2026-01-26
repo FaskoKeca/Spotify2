@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "User Profile";
+    var user = ViewData["User"] as MusicStreaming.Models.User;
+    var userPlaylists = ViewData["UserPlaylists"] as List<MusicStreaming.Models.Playlist>;
+    var isFollowing = (bool?)ViewData["IsFollowing"] ?? false;
+    var isCurrentUser = (bool?)ViewData["IsCurrentUser"] ?? false;
+    var followerCount = (int?)ViewData["FollowerCount"] ?? 0;
+    var followingCount = (int?)ViewData["FollowingCount"] ?? 0;
+}
+
+<div class="form-container">
+    <h1>@user?.Username</h1>
+    <p style="color: #666;">@user?.Email</p>
+    <p><strong>Member since:</strong> @user?.CreatedAt.ToString("MMMM yyyy")</p>
+
+    <div style="margin-top: 1rem; display: flex; gap: 2rem;">
+        <div>
+            <strong>Followers:</strong> @followerCount
+        </div>
+        <div>
+            <strong>Following:</strong> @followingCount
+        </div>
+    </div>
+
+    @if (!isCurrentUser && ViewData["Username"] != null)
+    {
+        <div style="margin-top: 1.5rem;">
+            <button class="btn @(isFollowing ? "btn-danger" : "btn-primary") @(isFollowing ? "following" : "") btn-sm" 
+                    type="button" 
+                    onclick="toggleFollow(@user?.Id, this)">
+                @(isFollowing ? "Following" : "Follow")
+            </button>
+        </div>
+    }
+
+    <h2 style="margin-top: 2rem;">Playlists (@(userPlaylists?.Count ?? 0))</h2>
+    @if (userPlaylists?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Playlist Name</th>
+                    <th>Songs</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var playlist in userPlaylists)
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "Playlists", new { id = playlist.Id })">
+                                @playlist.PlaylistName
+                            </a>
+                        </td>
+                        <td>@playlist.PlaylistSongs?.Count ?? 0</td>
+                        <td>@playlist.CreatedAt.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <button class="btn btn-heart btn-sm" type="button" onclick="toggleSavePlaylist(@playlist.Id, this)">
+                                ♡ Save
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>This user hasn't created any playlists yet.</p>
+    }
+</div>

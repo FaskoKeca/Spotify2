@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Artist Profile";
+    var artist = ViewData["User"] as MusicStreaming.Models.User;
+    var artistSongs = ViewData["ArtistSongs"] as List<MusicStreaming.Models.Song>;
+    var isFollowing = (bool?)ViewData["IsFollowing"] ?? false;
+    var isCurrentUser = (bool?)ViewData["IsCurrentUser"] ?? false;
+    var followerCount = (int?)ViewData["FollowerCount"] ?? 0;
+    var followingCount = (int?)ViewData["FollowingCount"] ?? 0;
+}
+
+<div class="form-container">
+    <h1>@artist?.Username</h1>
+    <p style="color: #666; font-size: 1.1rem;">Artist</p>
+    <p>@artist?.Email</p>
+    <p><strong>Member since:</strong> @artist?.CreatedAt.ToString("MMMM yyyy")</p>
+
+    <div style="margin-top: 1rem; display: flex; gap: 2rem;">
+        <div>
+            <strong>Followers:</strong> @followerCount
+        </div>
+        <div>
+            <strong>Following:</strong> @followingCount
+        </div>
+    </div>
+
+    @if (!isCurrentUser && ViewData["Username"] != null)
+    {
+        <div style="margin-top: 1.5rem;">
+            <button class="btn @(isFollowing ? "btn-danger" : "btn-primary") @(isFollowing ? "following" : "") btn-sm" 
+                    type="button" 
+                    onclick="toggleFollow(@artist.Id, this)">
+                @(isFollowing ? "Following" : "Follow")
+            </button>
+        </div>
+    }
+
+    <h2 style="margin-top: 2rem;">Songs (@(artistSongs?.Count ?? 0))</h2>
+    @if (artistSongs?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Song Name</th>
+                    <th>Producer</th>
+                    <th>Year</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var song in artistSongs)
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "Songs", new { id = song.Id })">
+                                @song.SongName
+                            </a>
+                        </td>
+                        <td>@song.Producer</td>
+                        <td>@song.SongYear</td>
+                        <td>
+                            <button class="btn btn-heart btn-sm" type="button" onclick="toggleSaveSong(@song.Id, this)">
+                                ♡ Save
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>This artist hasn't uploaded any songs yet.</p>
+    }
+</div>
