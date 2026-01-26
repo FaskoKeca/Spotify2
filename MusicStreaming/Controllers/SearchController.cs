@@ -38,6 +38,7 @@ namespace MusicStreaming.Controllers
 
             var playlists = _context.Playlists
                 .Include(p => p.User)
+                .Include(p => p.PlaylistSongs)     // makes or breaks the count on search
                 .Where(p => p.PlaylistName.Contains(query))
                 .ToList();
 

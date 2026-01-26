@@ -54,7 +54,7 @@
                                 @playlist.PlaylistName
                             </a>
                         </td>
-                        <td>@playlist.PlaylistSongs?.Count ?? 0</td>
+                        <td>@playlist.PlaylistSongs.Count</td>
                         <td>@playlist.CreatedAt.ToString("MMM dd, yyyy")</td>
                         <td>
                             <button class="btn btn-heart btn-sm" type="button" onclick="toggleSavePlaylist(@playlist.Id, this)">

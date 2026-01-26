@@ -30,6 +30,24 @@ namespace MusicStreaming.Controllers
                 return RedirectToAction("Login", "Account");
 
             SetViewData();
+            var userId = GetUserId(); // your session method
+            if (userId > 0)
+            {
+                // Saved songs
+                var savedSongIds = _context.SavedSongs
+                    .Where(ss => ss.UserId == userId)
+                    .Select(ss => ss.SongId)
+                    .ToHashSet();
+            
+            // Saved playlists  
+            var savedPlaylistIds = _context.SavedPlaylists
+                .Where(sp => sp.UserId == userId)
+                .Select(sp => sp.PlaylistId)
+                .ToHashSet();
+            ViewData["SavedSongIds"] = savedSongIds;
+            ViewData["SavedPlaylistIds"] = savedPlaylistIds;
+            }
+            
             var songs = _context.Songs.Include(s => s.Artist).OrderByDescending(s => s.CreatedAt).ToList();
             return View(songs);
         }

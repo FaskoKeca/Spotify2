@@ -69,9 +69,12 @@ namespace MusicStreaming.Data
                 .HasOne(sp => sp.Playlist)
                 .WithMany(p => p.SavedPlaylists)
                 .HasForeignKey(sp => sp.PlaylistId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Configure UserFollow relationships
+            // Configure UserFollow relationships - FIXED WITH COMPOSITE KEY
+            modelBuilder.Entity<UserFollow>()
+                .HasKey(uf => new { uf.FollowerId, uf.FollowingId });  // ← COMPOSITE PRIMARY KEY
+
             modelBuilder.Entity<UserFollow>()
                 .HasOne(uf => uf.Follower)
                 .WithMany(u => u.Following)

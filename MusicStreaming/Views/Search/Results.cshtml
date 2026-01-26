@@ -113,7 +113,10 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var playlist in playlists)
+            @{
+                var savedPlaylistIds = ViewData["SavedPlaylistIds"] as HashSet<int> ?? new HashSet<int>();
+            }
+                @foreach (Playlist playlist in playlists)
                 {
                     <tr>
                         <td>
@@ -126,8 +129,11 @@
                                 @playlist.User?.Username
                             </a>
                         </td>
-                        <td>@playlist.PlaylistSongs?.Count ?? 0</td>
+                        <td>@playlist.PlaylistSongs?.Count</td>
                         <td>
+                            @{
+                                bool isSaved = savedPlaylistIds.Contains(playlist.Id);
+                            }
                             <button class="btn btn-heart btn-sm" type="button" onclick="toggleSavePlaylist(@playlist.Id, this)">
                                 ♡ Save
                             </button>

@@ -71,7 +71,7 @@
                             </a>
                         </td>
                         <td>@saved.Playlist?.User?.Username</td>
-                        <td>@saved.Playlist?.PlaylistSongs?.Count ?? 0</td>
+                        <td>@saved.Playlist?.PlaylistSongs?.Count</td>
                         <td>@saved.SavedAt.ToString("MMM dd, yyyy")</td>
                         <td>
                             <form asp-action="RemovePlaylist" asp-controller="Library" method="post" style="display: inline;">

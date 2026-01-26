@@ -88,7 +88,7 @@ namespace MusicStreaming.Controllers
                 _context.SaveChanges();
             }
 
-            return Ok(new { message = "Song removed" });
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -130,7 +130,7 @@ namespace MusicStreaming.Controllers
                 _context.SaveChanges();
             }
 
-            return Ok(new { message = "Playlist removed" });
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

@@ -134,3 +134,4 @@ C:\Users\vpish\Desktop\VS Code Projects\mvc\Spotify2\MusicStreaming\obj\Debug\ne
 C:\Users\vpish\Desktop\VS Code Projects\mvc\Spotify2\MusicStreaming\obj\Debug\net8.0\MusicStreaming.pdb
 C:\Users\vpish\Desktop\VS Code Projects\mvc\Spotify2\MusicStreaming\obj\Debug\net8.0\MusicStreaming.genruntimeconfig.cache
 C:\Users\vpish\Desktop\VS Code Projects\mvc\Spotify2\MusicStreaming\obj\Debug\net8.0\ref\MusicStreaming.dll
+C:\Users\vpish\Desktop\VS Code Projects\mvc\Spotify2\MusicStreaming\obj\Debug\net8.0\MusicStreaming.sourcelink.json
