@@ -27,7 +27,7 @@ CREATE TABLE [Songs] (
     [SongYear] int NOT NULL,
     [CreatedAt] datetime2 NOT NULL,
     CONSTRAINT [PK_Songs] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_Songs_Users_ArtistId] FOREIGN KEY ([ArtistId]) REFERENCES [Users] ([Id]) ON DELETE RESTRICT
+    CONSTRAINT [FK_Songs_Users_ArtistId] FOREIGN KEY ([ArtistId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION
 );
 
 -- Playlists table
@@ -81,8 +81,8 @@ CREATE TABLE [UserFollows] (
     [FollowingId] int NOT NULL,
     [FollowedAt] datetime2 NOT NULL,
     CONSTRAINT [PK_UserFollows] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_UserFollows_Users_FollowerId] FOREIGN KEY ([FollowerId]) REFERENCES [Users] ([Id]) ON DELETE RESTRICT,
-    CONSTRAINT [FK_UserFollows_Users_FollowingId] FOREIGN KEY ([FollowingId]) REFERENCES [Users] ([Id]) ON DELETE RESTRICT,
+    CONSTRAINT [FK_UserFollows_Users_FollowerId] FOREIGN KEY ([FollowerId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_UserFollows_Users_FollowingId] FOREIGN KEY ([FollowingId]) REFERENCES [Users] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [UQ_UserFollows_Unique] UNIQUE ([FollowerId], [FollowingId])
 );
 
