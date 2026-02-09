@@ -211,6 +211,16 @@ namespace MusicStreaming.Controllers
             if (!IsLoggedIn())
                 return RedirectToAction("Login", "Account");
 
+            var userId = GetUserId();
+
+            // check owner
+            var playlist = _context.Playlists
+                .FirstOrDefault(p => p.Id == playlistId && p.UserId == userId);
+
+            if (playlist == null)
+                return Forbid();  // not owner or inexistent
+
+            
             var playlistSong = _context.PlaylistSongs
                 .FirstOrDefault(ps => ps.PlaylistId == playlistId && ps.SongId == songId);
 

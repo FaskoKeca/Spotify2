@@ -8,12 +8,18 @@
     <h1>@Model?.PlaylistName</h1>
     <p>@Model?.Description</p>
 
+    @{
+        var userIdFromSession = Context.Session.GetInt32("UserId") ?? 0;
+        var isOwner = Model.UserId == userIdFromSession;
+        var isUserLoggedIn = userIdFromSession > 0;
+    }
+
     <div style="margin-top: 1.5rem;">
-        @* <button class="btn btn-heart" type="button" onclick="toggleSavePlaylist(@Model?.Id, this)">
-            ♡ Save
-        </button> *@
-        <a href="@Url.Action("Edit", "Playlists", new { id = Model?.Id })" class="btn btn-info">Edit</a>
-        <a href="@Url.Action("Delete", "Playlists", new { id = Model?.Id })" class="btn btn-danger">Delete</a>
+        @if (isOwner)
+        {
+            <a href="@Url.Action("Edit", "Playlists", new { id = Model?.Id })" class="btn btn-info">Edit</a>
+            <a href="@Url.Action("Delete", "Playlists", new { id = Model?.Id })" class="btn btn-danger">Delete</a>
+        }
         <a href="@Url.Action("Index", "Playlists")" class="btn btn-secondary">Back</a>
     </div>
 
@@ -37,11 +43,28 @@
                         <td>@ps.Song?.Artist?.Username</td>
                         <td>@ps.AddedAt.ToString("MMM dd, yyyy")</td>
                         <td>
-                            <form asp-action="RemoveSong" method="post" style="display: inline;">
-                                <input type="hidden" name="playlistId" value="@Model.Id" />
-                                <input type="hidden" name="songId" value="@ps.SongId" />
-                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                            </form>
+                            @* remove from playlist: only for playlist owner *@
+                            @if (isOwner)
+                            {
+                                <form asp-action="RemoveSong" method="post" style="display: inline; margin-right: 0.5rem;">
+                                    <input type="hidden" name="playlistId" value="@Model.Id" />
+                                    <input type="hidden" name="songId" value="@ps.SongId" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form>
+                            }
+
+                            @* save song: for any logged‑in user, not owner-specific *@
+                            @if (isUserLoggedIn)
+                            {
+                                var savedSongIds = ViewData["SavedSongIds"] as HashSet<int>;
+                                var isSaved = (savedSongIds?.Contains(ps.SongId)) ?? false;
+
+                                <button class="btn btn-heart btn-sm @(isSaved ? "saved" : "")"
+                                        type="button"
+                                        onclick="toggleSaveSong(@ps.SongId, this)">
+                                    @(isSaved ? "♥ Saved" : "♡ Save")
+                                </button>
+                            }
                         </td>
                     </tr>
                 }
