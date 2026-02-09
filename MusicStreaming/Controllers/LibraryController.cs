@@ -88,7 +88,7 @@ namespace MusicStreaming.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction("Index");
+           return Ok(new { success = true });
         }
 
         [HttpPost]
@@ -119,10 +119,11 @@ namespace MusicStreaming.Controllers
         public IActionResult RemovePlaylist(int playlistId)
         {
             if (!IsLoggedIn())
-                return Unauthorized();
+                return Ok(new { success = false });
 
             var userId = GetUserId();
-            var saved = _context.SavedPlaylists.FirstOrDefault(p => p.UserId == userId && p.PlaylistId == playlistId);
+            var saved = _context.SavedPlaylists
+                .FirstOrDefault(p => p.UserId == userId && p.PlaylistId == playlistId);
 
             if (saved != null)
             {
@@ -130,7 +131,7 @@ namespace MusicStreaming.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction("Index");
+            return Ok(new { success = true }); //CHanged from redirect to index to return (for unsaving from save button)
         }
 
         [HttpGet]

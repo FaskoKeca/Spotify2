@@ -21,9 +21,9 @@
     </div>
 
     <div style="margin-top: 1.5rem;">
-        <button class="btn btn-heart" type="button" onclick="toggleSaveSong(@Model?.Id, this)">
+        @* <button class="btn btn-heart" type="button" onclick="toggleSaveSong(@Model?.Id, this)">
             ♡ Save
-        </button>
+        </button> *@
 
         @if (ViewData["Role"]?.ToString() == "Artist" && Model?.ArtistId == Context.Session.GetInt32("UserId") || ViewData["Role"]?.ToString() == "Admin")
         {

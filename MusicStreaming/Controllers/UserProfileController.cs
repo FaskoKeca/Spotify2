@@ -1,6 +1,8 @@
 using MusicStreaming.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using MusicStreaming.Models;
 
 namespace MusicStreaming.Controllers
 {
@@ -44,7 +46,7 @@ namespace MusicStreaming.Controllers
                 .Any(uf => uf.FollowerId == currentUserId && uf.FollowingId == id);
 
             ViewData["User"] = user;
-            ViewData["UserPlaylists"] = user.Playlists ?? new List<Models.Playlist>();
+            ViewData["UserPlaylists"] = user.Playlists ?? new List<Playlist>();
             ViewData["IsFollowing"] = isFollowing;
             ViewData["IsCurrentUser"] = (user.Id == currentUserId);
             ViewData["FollowerCount"] = user.Followers?.Count ?? 0;
@@ -73,12 +75,21 @@ namespace MusicStreaming.Controllers
             var isFollowing = _context.UserFollows
                 .Any(uf => uf.FollowerId == currentUserId && uf.FollowingId == id);
 
+            // saved songs for this user
+            var savedSongIds = currentUserId > 0
+                ? _context.SavedSongs
+                    .Where(ss => ss.UserId == currentUserId)
+                    .Select(ss => ss.SongId)
+                    .ToHashSet()
+                : new HashSet<int>();
+
             ViewData["User"] = artist;
-            ViewData["ArtistSongs"] = artist.Songs ?? new List<Models.Song>();
+            ViewData["ArtistSongs"] = artist.Songs ?? new List<Song>();
             ViewData["IsFollowing"] = isFollowing;
             ViewData["IsCurrentUser"] = (artist.Id == currentUserId);
             ViewData["FollowerCount"] = artist.Followers?.Count ?? 0;
             ViewData["FollowingCount"] = artist.Following?.Count ?? 0;
+            ViewData["SavedSongIds"] = savedSongIds;  // this enables the button state
 
             return View(artist);
         }

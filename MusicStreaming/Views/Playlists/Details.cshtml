@@ -9,9 +9,9 @@
     <p>@Model?.Description</p>
 
     <div style="margin-top: 1.5rem;">
-        <button class="btn btn-heart" type="button" onclick="toggleSavePlaylist(@Model?.Id, this)">
+        @* <button class="btn btn-heart" type="button" onclick="toggleSavePlaylist(@Model?.Id, this)">
             ♡ Save
-        </button>
+        </button> *@
         <a href="@Url.Action("Edit", "Playlists", new { id = Model?.Id })" class="btn btn-info">Edit</a>
         <a href="@Url.Action("Delete", "Playlists", new { id = Model?.Id })" class="btn btn-danger">Delete</a>
         <a href="@Url.Action("Index", "Playlists")" class="btn btn-secondary">Back</a>

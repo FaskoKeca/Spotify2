@@ -2,6 +2,7 @@ using MusicStreaming.Data;
 using MusicStreaming.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace MusicStreaming.Controllers
 {
@@ -31,11 +32,20 @@ namespace MusicStreaming.Controllers
 
             SetViewData();
             var userId = GetUserId();
+
             var playlists = _context.Playlists
                 .Where(p => p.UserId == userId)
                 .Include(p => p.PlaylistSongs)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToList();
+
+            var savedPlaylistIds = _context.SavedPlaylists
+                .Where(sp => sp.UserId == userId)
+                .Select(sp => sp.PlaylistId)
+                .ToHashSet();
+
+            ViewData["SavedPlaylistIds"] = savedPlaylistIds;
+
             return View(playlists);
         }
 
@@ -214,9 +224,3 @@ namespace MusicStreaming.Controllers
         }
     }
 }
-
-
-
-
-
-

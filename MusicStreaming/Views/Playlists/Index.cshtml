@@ -4,6 +4,14 @@
     ViewData["Title"] = "My Playlists";
 }
 
+@section Scripts {
+    <script>
+        const savedPlaylistIds = new Set([
+            @(string.Join(",", (ViewData["SavedPlaylistIds"] as HashSet<int> ?? new HashSet<int>()).Select(x => x.ToString())))
+        ]);
+    </script>
+}
+
 <h1>My Playlists</h1>
 
 <a href="@Url.Action("Create", "Playlists")" class="btn btn-primary" style="margin-bottom: 1.5rem;">Create New Playlist</a>
@@ -23,6 +31,7 @@
         <tbody>
             @foreach (var playlist in Model)
             {
+                var isSaved = ((ViewData["SavedPlaylistIds"] as HashSet<int>)?.Contains(playlist.Id)) ?? false;
                 <tr>
                     <td>
                         <a href="@Url.Action("Details", "Playlists", new { id = playlist.Id })">
@@ -33,8 +42,10 @@
                     <td>@playlist.PlaylistSongs.Count</td>
                     <td>@playlist.CreatedAt.ToString("MMM dd, yyyy")</td>
                     <td>
-                        <button class="btn btn-heart btn-sm" type="button" onclick="toggleSavePlaylist(@playlist.Id, this)">
-                            ♡ Save
+                        <button class="btn btn-heart btn-sm @(isSaved ? "saved" : "")"
+                                type="button"
+                                onclick="toggleSavePlaylist(@playlist.Id, this)">
+                            @(isSaved ? "♥ Saved" : "♡ Save")
                         </button>
                         <a href="@Url.Action("Edit", "Playlists", new { id = playlist.Id })" class="btn btn-info btn-sm">Edit</a>
                         <a href="@Url.Action("Delete", "Playlists", new { id = playlist.Id })" class="btn btn-danger btn-sm">Delete</a>
