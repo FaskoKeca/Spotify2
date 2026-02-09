@@ -15,22 +15,23 @@
     <p><strong>Member since:</strong> @artist?.CreatedAt.ToString("MMMM yyyy")</p>
 
     <div style="margin-top: 1rem; display: flex; gap: 2rem;">
-        <div>
+        @* <div>
             <strong>Followers:</strong> @followerCount
         </div>
         <div>
             <strong>Following:</strong> @followingCount
-        </div>
+        </div> *@
     </div>
 
     @if (!isCurrentUser && ViewData["Username"] != null)
     {
         <div style="margin-top: 1.5rem;">
+            @* Unfunctional follow button, to be implemented in the future 
             <button class="btn @(isFollowing ? "btn-danger" : "btn-primary") @(isFollowing ? "following" : "") btn-sm"
                     type="button"
                     onclick="toggleFollow(@artist.Id, this)">
                 @(isFollowing ? "Following" : "Follow")
-            </button>
+            </button> *@
         </div>
     }
 

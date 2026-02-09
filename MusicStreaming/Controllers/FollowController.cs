@@ -39,15 +39,15 @@ namespace MusicStreaming.Controllers
             return View(following);
         }
 
-        [HttpPost]
+                [HttpPost]
         public IActionResult Follow([FromQuery] int followingId)
         {
             if (!IsLoggedIn())
-                return Unauthorized();
+                return Json(new { success = false });
 
             var userId = GetUserId();
             if (userId == followingId)
-                return BadRequest(new { message = "Cannot follow yourself" });
+                return Json(new { success = false, message = "Cannot follow yourself" });
 
             var existing = _context.UserFollows
                 .FirstOrDefault(uf => uf.FollowerId == userId && uf.FollowingId == followingId);
@@ -64,14 +64,14 @@ namespace MusicStreaming.Controllers
                 _context.SaveChanges();
             }
 
-            return Ok(new { message = "Following" });
+            return Json(new { success = true });  // important: `success: true`
         }
 
         [HttpPost]
         public IActionResult Unfollow([FromQuery] int followingId)
         {
             if (!IsLoggedIn())
-                return Unauthorized();
+                return Json(new { success = false });
 
             var userId = GetUserId();
             var follow = _context.UserFollows
@@ -83,8 +83,9 @@ namespace MusicStreaming.Controllers
                 _context.SaveChanges();
             }
 
-            return Ok(new { message = "Unfollowed" });
+            return Json(new { success = true });  // important: `success: true`
         }
+
 
         [HttpGet]
         public IActionResult IsFollowing(int followingId)
