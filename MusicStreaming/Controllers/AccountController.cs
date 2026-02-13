@@ -137,7 +137,7 @@ namespace MusicStreaming.Controllers
                 return View();
             }
 
-            if (!new[] { "User", "Artist", "Admin" }.Contains(role))
+            if (!new[] { "User", "Artist"}.Contains(role))
             {
                 ModelState.AddModelError("", "Invalid role selected.");
                 return View();

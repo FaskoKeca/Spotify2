@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ZsoiLoc2QUKDNCEPargdhg7DiKXA3VBAKBWnePqN7rM=",
+  "Hash": "IIpj44sI1jZ8OIam5oIo0eEhbuxj7Q/vvyS+NgSwF9k=",
   "Source": "MusicStreaming",
   "BasePath": "_content/MusicStreaming",
   "Mode": "Default",
@@ -1193,6 +1193,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Identity": "C:\\Users\\vpish\\Desktop\\VS Code Projects\\mvc\\Spotify2\\MusicStreaming\\wwwroot\\logo.png",
+      "SourceId": "MusicStreaming",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\vpish\\Desktop\\VS Code Projects\\mvc\\Spotify2\\MusicStreaming\\wwwroot\\",
+      "BasePath": "_content/MusicStreaming",
+      "RelativePath": "logo.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\logo.png"
     }
   ]
 }
