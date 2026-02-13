@@ -10,10 +10,16 @@ namespace MusicStreaming.Controllers
     {
         private readonly MusicContext _context;
 
+        // Hardcoded admin
+        private const string HardcodedAdminUsername = "admin";
+        private const string HardcodedAdminPassword = "admin";
+        private const string HardcodedAdminPasswordHash = "jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg="; // ran through HashPassword
+
         public AccountController(MusicContext context)
         {
             _context = context;
         }
+
 
         private string HashPassword(string password)
         {
@@ -24,16 +30,19 @@ namespace MusicStreaming.Controllers
             }
         }
 
+
         private bool VerifyPassword(string password, string hash)
         {
             var hashOfInput = HashPassword(password);
             return hashOfInput == hash;
         }
 
+
         public IActionResult Login()
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -45,6 +54,31 @@ namespace MusicStreaming.Controllers
                 return View();
             }
 
+            // Hardcoded admin check
+            if (username == HardcodedAdminUsername && VerifyPassword(password, HardcodedAdminPasswordHash))
+            {
+                HttpContext.Session.SetString("Username", HardcodedAdminUsername);
+                HttpContext.Session.SetString("Role", "Admin");
+                HttpContext.Session.SetInt32("UserId", 0); // reserved for hardcoded admin
+
+                if (rememberMe)
+                {
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(30)
+                    };
+                    HttpContext.Response.Cookies.Append("RememberMe_Username", HardcodedAdminUsername, cookieOptions);
+                    HttpContext.Response.Cookies.Append("RememberMe_Role", "Admin", cookieOptions);
+                    HttpContext.Response.Cookies.Append("RememberMe_UserId", "0", cookieOptions);
+                }
+
+                return RedirectToAction("Index", "Songs");
+            }
+
+            // Existing DB login
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
             if (user != null && VerifyPassword(password, user.Password))
@@ -74,10 +108,12 @@ namespace MusicStreaming.Controllers
             return View();
         }
 
+
         public IActionResult Register()
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -101,7 +137,7 @@ namespace MusicStreaming.Controllers
                 return View();
             }
 
-            if (!new[] { "User", "Artist" }.Contains(role))
+            if (!new[] { "User", "Artist", "Admin" }.Contains(role))
             {
                 ModelState.AddModelError("", "Invalid role selected.");
                 return View();
@@ -125,6 +161,7 @@ namespace MusicStreaming.Controllers
 
             return RedirectToAction("Index", "Songs");
         }
+
 
         public IActionResult Logout()
         {

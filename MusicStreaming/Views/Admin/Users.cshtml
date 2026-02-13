@@ -1,0 +1,79 @@
+@model List<MusicStreaming.Models.User>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h2>Users</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
+            <td>
+                @if (user.Role == "Admin")
+                {
+                    <form asp-action="DemoteUser" method="post"
+                        style="display: inline-block; margin-right: 0.5rem;">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-warning btn-sm"
+                                onclick="return confirm('Demote @user.Username from Admin?');">
+                            Demote
+                        </button>
+                    </form>
+                    <form asp-action="DeleteUser" method="post"
+                        style="display: inline-block;">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Delete user @user.Username?');">
+                            Delete
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="PromoteUser" method="post"
+                        style="display: inline-block; margin-right: 0.5rem;">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-success btn-sm"
+                                onclick="return confirm('Promote @user.Username to Admin?');">
+                            Promote
+                        </button>
+                    </form>
+                    <form asp-action="DeleteUser" method="post"
+                        style="display: inline-block;">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Delete user @user.Username?');">
+                            Delete
+                        </button>
+                    </form>
+                }
+            </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -45,4 +45,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
+app.MapControllerRoute(
+name: "admin",
+pattern: "Admin/{action=Users}",
+defaults: new { controller = "Admin" });
+
+
 app.Run();
