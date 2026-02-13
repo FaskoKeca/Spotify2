@@ -75,7 +75,10 @@
                             <a class="nav-link" asp-controller="Admin" asp-action="Users">Admin Panel</a>
                         </li>
                     }
-                    <a href="@Url.Action("Index", "Library")">My Library</a>
+                    @if (ViewData["Role"]?.ToString() == "Artist" || ViewData["Role"]?.ToString() == "User")
+                    {
+                        <a href="@Url.Action("Index", "Library")">My Library</a>
+                    }
                     <span class="user-info">@ViewData["Username"]</span>
                     <a href="@Url.Action("Logout", "Account")">Logout</a>
                 </div>
