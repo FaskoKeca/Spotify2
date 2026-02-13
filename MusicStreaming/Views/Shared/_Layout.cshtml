@@ -61,8 +61,11 @@
                 </div>
                 <div class="nav-menu">
                     <a href="@Url.Action("Index", "Songs")">Songs</a>
-                    <a href="@Url.Action("Index", "Playlists")">Playlists</a>
-                    @if (ViewData["Role"]?.ToString() == "Artist" || ViewData["Role"]?.ToString() == "Admin")
+                    @if (ViewData["Role"]?.ToString() == "Artist" || ViewData["Role"]?.ToString() == "User")
+                    {
+                        <a href="@Url.Action("Index", "Playlists")">Playlists</a>
+                    }
+                    @if (ViewData["Role"]?.ToString() == "Artist")
                     {
                         <a href="@Url.Action("Create", "Songs")">Add Song</a>
                     }
