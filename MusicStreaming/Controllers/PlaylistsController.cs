@@ -55,11 +55,13 @@ namespace MusicStreaming.Controllers
                 return RedirectToAction("Login", "Account");
 
             SetViewData();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var playlist = _context.Playlists
                 .Include(p => p.PlaylistSongs)
                 .ThenInclude(ps => ps.Song)
                 .ThenInclude(s => s.Artist)
                 .FirstOrDefault(p => p.Id == id);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             if (playlist == null)
                 return NotFound();
